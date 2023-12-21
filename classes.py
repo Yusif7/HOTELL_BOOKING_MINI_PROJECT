@@ -2,9 +2,11 @@ import pandas
 
 # Dtype helps us to change type of columns
 df = pandas.read_csv('hotels.csv', dtype={'id': str})
+# records' : list like [{column -> value}, … , {column -> value}]
+df_card = pandas.read_csv("cards.csv", dtype=str).to_dict(orient="records")
 
 
-class Hotel():
+class Hotel:
     def __init__(self, hotel_id):
         self.hotel_id = hotel_id
         # Extract name column from our data frame
@@ -27,7 +29,7 @@ class Hotel():
             return False
 
 
-class ReservationTicket():
+class ReservationTicket:
     def __init__(self, customer_name, hotel_object):
         self.customer_name = customer_name
         self.hotel = hotel_object
@@ -43,15 +45,22 @@ class ReservationTicket():
         return content
 
 
-print(df)
-hotel_id = input("Enter the id of the hotel : ")
-hotel = Hotel(hotel_id)
-if hotel.available():
-    hotel.book()
-    name = input("Enter your name: ")
-    reservation_ticket = ReservationTicket(customer_name=name, hotel_object=hotel)
-    print(reservation_ticket.generate())
-else:
-    print("Hotel is not free.")
+class CreditCard:
+    # To define how many parameter should use in init method and other method inside in class, you need to understand when we declare class init method authomatically
+    # start work in situation for define in credit we need only number and that's why we can use only one parameter number
+    def __init__(self, number):
+        self.number = number
 
+    def validate(self, expiration, holder, cvc):
+        # We use dictionary data type because it is more efficient way to extract data
+        card_data = {
+            "number": self.number,
+            "expiration": expiration,
+            "holder": holder,
+            "cvc": cvc
+        }
 
+        if card_data in df_card:
+            return True
+        else:
+            return False
