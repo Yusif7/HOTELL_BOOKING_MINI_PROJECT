@@ -4,6 +4,7 @@ import pandas
 df = pandas.read_csv('hotels.csv', dtype={'id': str})
 # records' : list like [{column -> value}, … , {column -> value}]
 df_card = pandas.read_csv("cards.csv", dtype=str).to_dict(orient="records")
+df_card_security = pandas.read_csv("card_security.csv", dtype=str)
 
 
 class Hotel:
@@ -61,6 +62,18 @@ class CreditCard:
         }
 
         if card_data in df_card:
+            return True
+        else:
+            return False
+
+
+# Parent class: CreditCard
+# Child class: CardSecurity
+class CardSecurity(CreditCard):
+    def authenticate(self, given_password):
+        # When we inherit CreditCard class we have access to all his method that's why we can use here self.number
+        password = df_card_security.loc[df_card_security["number"] == self.number, "password"].squeeze()
+        if password == given_password:
             return True
         else:
             return False
